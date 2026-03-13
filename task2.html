@@ -1,0 +1,499 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midterm Task 2 | Data Cleaning &amp; Transformation Using Pivot table and pie chart</title>
+
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/thin/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/light/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/duotone/style.css">
+
+
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-light: #f7f9fc;
+      --card-dark: rgba(18, 25, 38, 0.95);
+      --card-light: rgba(255, 255, 255, 0.9);
+      --text-dark: #d8e1ef;
+      --text-light: #1e293b;
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --secondary: #3a0ca3;
+      --accent: #7209b7;
+      --success: #2ecc71;
+      --radius: 16px;
+    }
+
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+
+    header {
+      text-align: center;
+      padding: 3rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(76, 0, 247, 0.15), transparent 70%),
+                  radial-gradient(circle at bottom left, rgba(114, 9, 183, 0.15), transparent 70%);
+      z-index: -1;
+    }
+
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--primary-light), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+
+    .subtitle {
+      color: rgba(255,255,255,0.8);
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+
+
+    .process-card {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+
+    .process-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    }
+
+
+    .step-title {
+      color: var(--primary-light);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+
+    .step-list {
+      list-style: none;
+      padding-left: 2rem;
+    }
+
+
+    .step-list li {
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+
+    .step-list li::before {
+      content: "•";
+      color: var(--primary-light);
+      margin-top: 0.2rem;
+    }
+
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+
+    .image-card {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    .image-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+
+    .image-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+
+    .image-card:hover img {
+      transform: scale(1.05);
+    }
+
+
+    .image-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(18, 25, 38, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+
+    .image-card:hover .image-overlay {
+      opacity: 1;
+    }
+
+
+    .image-overlay span {
+      color: white;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: 2px solid white;
+      border-radius: 8px;
+      background: rgba(67, 97, 238, 0.3);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+
+    .image-card:hover .image-overlay span {
+      transform: translateY(0);
+    }
+
+
+    .download-section {
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+
+    .download-hint {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--primary-light);
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(67, 97, 238, 0.1);
+      border-radius: 8px;
+      width: fit-content;
+      margin: 0 auto 1.5rem;
+    }
+
+
+    .download-hint i {
+      font-size: 1.25rem;
+    }
+
+
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+
+    .download-card {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+    }
+
+
+    .download-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      border-color: var(--primary-light);
+    }
+
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(67, 97, 238, 0.2);
+      color: var(--primary-light);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+
+    .download-btn:hover {
+      background: rgba(67, 97, 238, 0.3);
+      transform: translateY(-3px);
+    }
+
+
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 23, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 2rem;
+      backdrop-filter: blur(8px);
+    }
+
+
+    .modal.active {
+      display: flex;
+      animation: modalFadeIn 0.3s ease forwards;
+    }
+
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 90vh;
+      position: relative;
+      animation: modalContentSlide 0.3s ease forwards;
+    }
+
+
+    @keyframes modalContentSlide {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+    .modal-content img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+
+    .close-modal {
+      position: absolute;
+      top: -2rem;
+      right: -2rem;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+
+    .close-modal:hover {
+      color: var(--primary-light);
+      transform: rotate(90deg);
+    }
+
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+     
+      .image-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+     
+      .image-card {
+        aspect-ratio: 4/3;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Midterm Task 2: Data Cleaning &amp; Transformation Using Pivot table</h1>
+      <p class="subtitle">This project demonstrates the process of cleaning, transforming, and analyzing a dataset of job listings using pivot in Excel, ensuring data accuracy and organization for meaningful insights.</p>
+    </header>
+
+
+    <main>
+  
+      <div class="process-card">
+        <h2 class="step-title"><i class="ph ph-sparkle"></i>Data Cleaning Process</h2>
+        <ul class="step-list">
+          <li>Extract salary information from Salary Estimate Column</li>
+          <li>Create Min Sal &amp; Max Sal Columns using Column from Examples</li>
+          <li>Implement Role Type Column with custom conditions</li>
+          <li>Standardize locations and split by delimiter</li>
+          <li>Handle outliers in competitors, revenues, and industry data</li>
+          <li>Clean Company Names by removing ratings and extra text</li>
+          <li>Remove unnecessary Description Column</li>
+        </ul>
+      </div>
+
+
+      <div class="process-card">
+        <h2 class="step-title"><i class="ph ph-arrows-left-right"></i>Data Transformation &amp; Analysis</h2>
+        <ul class="step-list">
+          <li>Create salary analysis by Role Type</li>
+          <li>Convert salary data to currency format and apply calculations</li>
+          <li>Generate Company Size reference data</li>
+          <li>Implement State Mapping with full names</li>
+          <li>Calculate and analyze average salaries by state</li>
+        </ul>
+      </div>
+
+
+      <div class="image-grid">
+        <div class="image-card">
+          <img src="Screenshot (609).png" alt="Dataset Before Cleaning">
+          <div class="image-overlay">
+            <span>View Original Dataset</span>
+          </div>
+        </div>
+
+
+        <div class="image-card">
+          <img src="Screenshot (610).png" alt="Final Output">
+          <div class="image-overlay">
+            <span>View clean data, Pivot table and recommended chart</span>
+          </div>
+        </div>
+
+
+        <div class="image-card">
+          <img src="Screenshot (611).png" alt="Salary by Role Size">
+          <div class="image-overlay">
+            <span>View country with pie chart</span>
+          </div>
+        </div>
+
+    </main>
+  </div>
+
+
+  <!-- Image Modal -->
+  <div class="modal" id="imageModal">
+    <div class="modal-content">
+      <button class="close-modal">
+        <i class="ph ph-x"></i>
+      </button>
+      <img src="" alt="Modal Image" id="modalImage">
+    </div>
+  </div>
+
+
+  <script>
+    // Image Modal Functionality
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const closeBtn = document.querySelector('.close-modal');
+    const imageCards = document.querySelectorAll('.image-card');
+
+
+    imageCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const img = card.querySelector('img');
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+        modal.classList.add('active');
+      });
+    });
+
+
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        modal.classList.remove('active');
+      }
+    });
+  </script>
+
+
+</body></html>
